@@ -11,17 +11,27 @@ RUN go mod download
 COPY . .
 
 # Build the binary from cmd/server/main.go
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o server ./cmd/server
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o post-service ./cmd/post-service
 
-# Stage 2: Run the built binary in a lightweight image
-FROM debian:bullseye-slim
+# # Stage 2: Run the built binary in a lightweight image
+# FROM debian:bullseye-slim
+
+# WORKDIR /app
+
+# # Copy the binary from builder stage
+# COPY --from=builder /app/server .
+
+# EXPOSE 8080
+
+# # Run the app
+# CMD ["./server"]
+
+FROM golang:1.22-alpine
 
 WORKDIR /app
-
-# Copy the binary from builder stage
-COPY --from=builder /app/server .
+COPY . .
+RUN go mod download
+RUN go build -o post-service ./cmd/post-service
 
 EXPOSE 8080
-
-# Run the app
-CMD ["./server"]
+CMD ["./post-service"]
