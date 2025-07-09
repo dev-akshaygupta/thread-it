@@ -11,7 +11,7 @@ RUN go mod download
 COPY . .
 
 # Build the binary from cmd/server/main.go
-RUN go build -o server ./cmd/server
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o server ./cmd/server
 
 # Stage 2: Run the built binary in a lightweight image
 FROM debian:bullseye-slim
@@ -20,6 +20,8 @@ WORKDIR /app
 
 # Copy the binary from builder stage
 COPY --from=builder /app/server .
+
+EXPOSE 8080
 
 # Run the app
 CMD ["./server"]
