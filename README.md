@@ -1,2 +1,2 @@
 # thread-it
-My version of Reddit
+Reddit in Golang
