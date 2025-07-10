@@ -8,20 +8,26 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - DB_NAME=reddit_clone
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: thread_it
+      PORT: 8080
     depends_on:
       - postgres
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 10s
+      timeout: 2s
+      retries: 5
 
   postgres:
     image: postgres:16
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: reddit_clone
+      POSTGRES_DB: thread_it
     ports:
       - "5433:5432"
     volumes:

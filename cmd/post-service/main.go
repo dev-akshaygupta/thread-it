@@ -1,4 +1,4 @@
-package postservice
+package main
 
 import (
 	"log"
@@ -10,6 +10,7 @@ import (
 	"github.com/dev-akshaygupta/thread-it/internal/domain/post/repository"
 	"github.com/dev-akshaygupta/thread-it/internal/domain/post/service"
 	"github.com/dev-akshaygupta/thread-it/pkg/db"
+	_ "github.com/lib/pq"
 )
 
 func main() {

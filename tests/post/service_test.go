@@ -38,15 +38,6 @@ func TestCreatePost(t *testing.T) {
 		SubredditID: "Only blog",
 	}
 	userID := "u12322"
-	// post := &model.Post{
-	// 	ID:          "p1",
-	// 	Title:       input.Title,
-	// 	Body:        input.Body,
-	// 	UserID:      userID,
-	// 	SubredditID: input.SubredditID,
-	// 	CreatedAt:   time.Now(),
-	// 	VoteCount:   0,
-	// }
 
 	mockRepo.On("Save", mock.AnythingOfType("*model.Post")).Return(nil)
 

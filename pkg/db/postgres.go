@@ -3,17 +3,23 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"os"
 )
 
 func NewPostgresDb() *sql.DB {
+
+	host := os.Getenv("DB_HOST") // Should be 'postgres'
+	port := os.Getenv("DB_PORT") // Should be '5432'
+	user := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASSWORD")
+	dbname := os.Getenv("DB_NAME")
+
+	log.Printf("DB env values -> host: %s, port: %s, user: %s", host, port, user)
+
 	dsn := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_PORT"),
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_NAME"),
+		host, port, user, password, dbname,
 	)
 
 	db, err := sql.Open("postgres", dsn)

@@ -1,37 +1,33 @@
-# Stage 1: Build the Go app
-FROM golang:1.22 AS builder
+# Use official Go image
+FROM golang:1.22-alpine AS builder
 
+# Set up working directory
 WORKDIR /app
 
-# Copy go mod files and download
+# Copy go mod files and download dependencies
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Copy the entire project (so it can see all packages)
+# Copy the rest of the app
 COPY . .
 
-# Build the binary from cmd/server/main.go
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o post-service ./cmd/post-service
+# Build the Go app binary
+ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o post-service ./cmd/post-service
 
-# # Stage 2: Run the built binary in a lightweight image
-# FROM debian:bullseye-slim
+# Use a lightweight final image
+FROM alpine:latest
 
-# WORKDIR /app
+# Create non-root user for safety
+RUN adduser -D appuser
 
-# # Copy the binary from builder stage
-# COPY --from=builder /app/server .
+# Set working directory
+WORKDIR /home/appuser
 
-# EXPOSE 8080
+# Copy binary from builder
+COPY --from=builder /app/post-service .
 
-# # Run the app
-# CMD ["./server"]
+# Use non-root user
+USER appuser
 
-FROM golang:1.22-alpine
-
-WORKDIR /app
-COPY . .
-RUN go mod download
-RUN go build -o post-service ./cmd/post-service
-
-EXPOSE 8080
+# Set entrypoint
 CMD ["./post-service"]
